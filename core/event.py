@@ -1,21 +1,22 @@
 from nonebot.adapters import Message
 from nonebot.adapters import Event as BaseEvent
 from nonebot.drivers import Driver
+from pydantic import ConfigDict
 from typing import override
 from abc import abstractmethod
 from datetime import datetime
-from .matcher.exMatcher import ExMatcher
+from .matcher.exMatcher import ExMatcherMeta, ExMatcher
 from .target import Target
 
 class EmitEvent(BaseEvent):
 	"""
 	Matcher委托事件
 	"""
+	model_config = ConfigDict(arbitrary_types_allowed=True)
+
 	name: str
-	def __init__(self, *args, matcher: ExMatcher, target: Target, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.matcher = matcher
-		self.target = target
+	matcher: ExMatcherMeta
+	target: Target
 
 	@override
 	def get_type(self) -> str:
@@ -55,11 +56,9 @@ class ConnectEvent(EmitEvent):
 	连接协议层事件
 	"""
 	name: str = 'connect'
+	driver: Driver
+	time: datetime
 
-	def __init__(self, driver: Driver, time: datetime, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.driver = driver
-		self.time = time
 
 	@override
 	def desc(self) -> str:
@@ -116,3 +115,18 @@ class TimeEvent(EmitEvent):
 	def desc(self) -> str:
 		"""获取事件描述的方法，通常为事件具体内容。"""
 		return self.descStr
+
+
+class MatcherErrorEvent(EmitEvent):
+	"""
+	错误事件
+	"""
+	name: str = 'error'
+	errMatcher: ExMatcher
+	event: BaseEvent
+	error: Exception
+
+	@override
+	def desc(self) -> str:
+		"""获取事件描述的方法，通常为事件具体内容。"""
+		return f'run <y>{self.errMatcher}</y> failed with <r> {self.error} </r> when handling event <c>{self.event}</c>'

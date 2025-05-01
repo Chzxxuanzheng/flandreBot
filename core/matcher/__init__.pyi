@@ -109,3 +109,14 @@ def intervalMatcher(
     expire_time: datetime | timedelta | None = ...,
     state: T_State | None = ...,
 ) -> Callable[[Any],T_Handler]: ...
+def matcherErrorMatcher(
+	msgType: Literal['group','private'],
+	id: int,
+	*,
+	desc: str,
+    rule: Rule | T_RuleChecker | None = ...,
+    handlers: list[T_Handler | Dependent[Any]] | None = ...,
+    temp: bool = ...,
+    expire_time: datetime | timedelta | None = ...,
+    state: T_State | None = ...,
+) -> Callable[[Any],T_Handler]: ...

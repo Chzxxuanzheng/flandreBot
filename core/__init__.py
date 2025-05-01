@@ -1,1 +1,1 @@
-from .matcher import commandMatcher, connectMatcher, cronMatcher, intervalMatcher, messageMatcher, finish
+from .matcher import *

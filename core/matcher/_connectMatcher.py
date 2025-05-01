@@ -17,7 +17,7 @@ def __connectEmitEvent(args, kwargs)-> None:
 	id: str|list[str] = kwargs.pop('id')
 	class _ConnectEvent(ConnectEvent):
 		def __init__(self, driver: Driver, time: datetime):
-			super().__init__(driver, time, *args, **kwargs, matcher = matcher, target=Target(type, id))
+			super().__init__(driver=driver, time=time, matcher=matcher, target=Target(type, id), *args, **kwargs)
 	__eventList.append(_ConnectEvent)
 
 def __on_connect(*args, **kwargs)-> type[ExMatcher]:
@@ -43,7 +43,8 @@ connectMatcher = activeMatcherMake(__on_connect, __connectEmitEvent)
 __driver = get_driver()
 @__driver.on_bot_connect
 async def _(bot: Bot):
-	events = [event(bot, datetime.now()) for event in __eventList]
+	time = datetime.now()
+	events = [event(__driver, time) for event in __eventList]
 	async with TaskGroup() as g:
 		for event in events:
 			g.create_task(handle_event(bot, event))

@@ -253,14 +253,13 @@ name = "flandre"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "apscheduler" },
     { name = "httpx" },
     { name = "mcrcon" },
     { name = "nonebot-adapter-onebot", version = "2.4.3", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version < '3.9'" },
     { name = "nonebot-adapter-onebot", version = "2.4.6", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version >= '3.9'" },
     { name = "nonebot-plugin-alconna", version = "0.42.4", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version < '3.9'" },
     { name = "nonebot-plugin-alconna", version = "0.57.3", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version >= '3.9'" },
-    { name = "nonebot-plugin-apscheduler", version = "0.4.0", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version < '3.9'" },
-    { name = "nonebot-plugin-apscheduler", version = "0.5.0", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version >= '3.9'" },
     { name = "nonebot-plugin-orm", extra = ["sqlite"] },
     { name = "nonebot2", version = "2.2.1", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, extra = ["fastapi"], marker = "python_full_version < '3.9'" },
     { name = "nonebot2", version = "2.4.2", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, extra = ["fastapi"], marker = "python_full_version >= '3.9'" },
@@ -270,11 +269,11 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "apscheduler", specifier = ">=3.11.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcrcon", specifier = ">=0.7.0" },
     { name = "nonebot-adapter-onebot", specifier = ">=2.4.3" },
     { name = "nonebot-plugin-alconna", specifier = ">=0.42.4" },
-    { name = "nonebot-plugin-apscheduler", specifier = ">=0.4.0" },
     { name = "nonebot-plugin-orm", extras = ["sqlite"], specifier = ">=0.7.7" },
     { name = "nonebot2", extras = ["fastapi"], specifier = ">=2.2.1" },
     { name = "pyotp", specifier = ">=2.9.0" },
@@ -1104,40 +1103,6 @@ dependencies = [
 sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/68/f3/5bc7a68a87cec523cf6eeaa0da24e8701bb9779ac4b087d5e89c228be788/nonebot_plugin_alconna-0.57.3.tar.gz", hash = "sha256:3bed4aecd93f59f75858d5a410b339d4ee8cd1afe20a8c2cd4850f777a1969bc", size = 147686, upload_time = "2025-04-23T14:37:02.66Z" }
 wheels = [
     { url = "https://pypi.tuna.tsinghua.edu.cn/packages/6d/69/16744676c18b0e0b6903a178fe11ba0973ce769f20bc364f3b2b52f9a37c/nonebot_plugin_alconna-0.57.3-py3-none-any.whl", hash = "sha256:fa878275a21906530ad7553cb011cd7eac5e570843c09cd970a8ed5e625a50d6", size = 203739, upload_time = "2025-04-23T14:37:01.381Z" },
-]
-
-[[package]]
-name = "nonebot-plugin-apscheduler"
-version = "0.4.0"
-source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
-resolution-markers = [
-    "python_full_version < '3.9'",
-]
-dependencies = [
-    { name = "apscheduler", marker = "python_full_version < '3.9'" },
-    { name = "nonebot2", version = "2.2.1", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version < '3.9'" },
-    { name = "pydantic", version = "2.10.6", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version < '3.9'" },
-]
-sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/24/1f/f10eafc3cda02f58150fff99dc527d1c4a3af3ffdcc975964ec0a4cfe409/nonebot_plugin_apscheduler-0.4.0.tar.gz", hash = "sha256:ba91e68809a38e6dbe28906366d47f37f754ded360944b938cd5ac62029a0eb6", size = 3414, upload_time = "2024-02-12T13:56:50.118Z" }
-wheels = [
-    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/a3/b9/5889d25f284701fbefd36f328ff18ced3ad655096669fa11eba1a8f340f8/nonebot_plugin_apscheduler-0.4.0-py3-none-any.whl", hash = "sha256:f01bb418a5ecf9f04dcadbbc2ff5ba565a48177eb0a758c8c46b13048ac5680c", size = 4111, upload_time = "2024-02-12T13:56:49.11Z" },
-]
-
-[[package]]
-name = "nonebot-plugin-apscheduler"
-version = "0.5.0"
-source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
-resolution-markers = [
-    "python_full_version >= '3.9'",
-]
-dependencies = [
-    { name = "apscheduler", marker = "python_full_version >= '3.9'" },
-    { name = "nonebot2", version = "2.4.2", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version >= '3.9'" },
-    { name = "pydantic", version = "2.11.3", source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }, marker = "python_full_version >= '3.9'" },
-]
-sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/d6/53/019bfea58c506c0166d8ef77959fd8676019469d0d3d8e135ae8f1a4b772/nonebot_plugin_apscheduler-0.5.0.tar.gz", hash = "sha256:6c0230e99765f275dc83d6639ff33bd6f71203fa10cd1b8a204b0f95530cda86", size = 3816, upload_time = "2024-06-28T13:17:10.57Z" }
-wheels = [
-    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/fb/f4/8a3334dcd91e368d2f4e2b21f4805ac70b5dd8a1f9dac94fea5269e82bd3/nonebot_plugin_apscheduler-0.5.0-py3-none-any.whl", hash = "sha256:8b99b5ee60c4bc195d4df2fd27dab3d6963691e3332f6cee31a06eb4277c307f", size = 4307, upload_time = "2024-06-28T13:17:09.593Z" },
 ]
 
 [[package]]

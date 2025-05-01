@@ -1,0 +1,10 @@
+__pycache__
+.venv
+.vscode
+disablePlugins
+testPlugins
+log
+migrations
+config.toml
+db.sqlite3
+tmp.py

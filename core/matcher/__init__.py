@@ -1,4 +1,4 @@
-from ._sender import finish
+from ._sender import finish, FinishMatcherProcess, RecallMsg
 from ._commandMatcher import commandMatcher
 from ._messageMatcher import messageMatcher
 from ._connectMatcher import connectMatcher

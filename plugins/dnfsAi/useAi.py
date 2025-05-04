@@ -32,12 +32,13 @@ class Fetch:
 	def __init__(self):
 		self.lock = Lock()
 
-	async def __call__(self, question: str, user: str, conversation_id: str|None) -> dict:
+	async def __call__(self, question: str, user: str, conversation_id: str|None) -> AsyncGenerator[dict, None]:
 		if conversation_id == None:
 			conversation_id = ""
 		data = Data(question=question, user=user, conversation_id=conversation_id)
 		async with self.lock:
-			await self.main(data)
+			async for response in self.main(data):
+				yield response
 
 	async def main(self, data: Data) -> AsyncGenerator[dict, None]:
 		headers: dict[str, str] = {
@@ -46,12 +47,11 @@ class Fetch:
 		}
 		data = {
 			"inputs": {},
-			"query": data.question,
+			"query": data.user + ':\n'+ data.question,
 			"response_mode": "streaming",
 			"conversation_id": data.conversation_id,
-			"user": data.user,
+			"user": 'qqBot',
 		}
-		print(data)
 		async with httpx.AsyncClient(timeout=httpx.Timeout(100)) as client:
 			async with client.stream("POST", f'{config.api}/v1/chat-messages', headers=headers, json=data) as resp:
 				if resp.status_code != 200:
@@ -59,6 +59,5 @@ class Fetch:
 				async for line in resp.aiter_lines():
 					data = praseData(line)
 					if not data:continue
-					print(data)
-					# yield data
-						
+					if data['event']=='agent_thought':
+						yield data

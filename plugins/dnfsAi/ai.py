@@ -14,6 +14,11 @@ fetch = Fetch()
 @messageMatcher(desc='在dnfs社区群内调用他们的AI', priority=10, rule=to_me() & fromGroup(config.allowGroup))
 async def ai(event: MessageEvent, session: async_scoped_session):
 	question = event.get_plaintext()
+	if event.reply:
+		reply = event.reply.message
+		user = event.reply.sender.nickname
+		if not user: user = f'未知用户({event.reply.sender.user_id})'
+		question = f'```reply\n{user}:\n{reply}```\n{question}'
 	if not question:
 		finish([MessageSegment.reply(event.message_id), "请输入问题"])
 	user = event.sender.nickname

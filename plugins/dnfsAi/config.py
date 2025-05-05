@@ -6,5 +6,6 @@ class Config(baseConfig("dnfsAi")):
 	api: str
 	key: str
 	allowGroup: int
+	system: str
 
 config = Config.getConfig()

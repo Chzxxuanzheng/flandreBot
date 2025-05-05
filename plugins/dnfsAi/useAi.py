@@ -45,12 +45,15 @@ class Fetch:
 			"Authorization": f'Bearer {config.key}',
 			"Content-Type": "application/json"
 		}
+		print(config.system)
 		data = {
-			"inputs": {},
+			"inputs": {
+				"extra_system": config.system.replace('\n', '\\n'),
+			},
 			"query": data.user + ':\n'+ data.question,
 			"response_mode": "streaming",
 			"conversation_id": data.conversation_id,
-			"user": 'qqBot',
+			"user": '	qqBot',
 		}
 		async with httpx.AsyncClient(timeout=httpx.Timeout(100)) as client:
 			async with client.stream("POST", f'{config.api}/v1/chat-messages', headers=headers, json=data) as resp:

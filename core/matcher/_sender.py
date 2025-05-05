@@ -54,19 +54,19 @@ def createEmiEventSender(bot: Bot, event: EmitEvent)-> Sender:
 	# 创建用于EmitEvent的Sender
 	target = event.target
 	if target.type == TargetType.PRIVATE:
-		return createBaseSender(bot, event, target.id, 'private')
+		return createBaseSender(bot, target.id, 'private')
 	else:
-		return createBaseSender(bot, event, target.id, 'group')
+		return createBaseSender(bot, target.id, 'group')
 
 def createNorEventSender(bot: Bot, event: Event)-> Sender:
 	# 创建用于普通Event的Sender
 	if isinstance(event, PrivateMessageEvent):
-		return createBaseSender(bot, event, event.user_id, 'private')
+		return createBaseSender(bot, event.user_id, 'private')
 	else:
-		return createBaseSender(bot, event, event.group_id, 'group')
+		return createBaseSender(bot, event.group_id, 'group')
 
 
-def createBaseSender(bot: Bot, event: Event, targetId: int|str|Iterable[int|str], type: Literal['group', 'private'])-> Sender:
+def createBaseSender(bot: Bot, targetId: int|str|Iterable[int|str], type: Literal['group', 'private'])-> Sender:
 	if type == 'group':
 		sendNor = sendGroupNormalMsg
 		sendFor = sendGroupForwardMsg

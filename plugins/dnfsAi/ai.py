@@ -13,9 +13,10 @@ fetch = Fetch()
 
 @messageMatcher(desc='在dnfs社区群内调用他们的AI', priority=10, rule=to_me() & fromGroup(config.allowGroup))
 async def ai(event: MessageEvent, session: async_scoped_session):
+	# 获取消息
 	question = event.get_plaintext()
 	if event.reply:
-		reply = event.reply.message
+		reply = event.reply.message.extract_plain_text()
 		user = event.reply.sender.nickname
 		if not user: user = f'未知用户({event.reply.sender.user_id})'
 		question = f'```reply\n{user}:\n{reply}```\n{question}'
@@ -29,22 +30,19 @@ async def ai(event: MessageEvent, session: async_scoped_session):
 		if getId: conversation_id = getId.id
 		else: conversation_id = None
 
+	# 询问AI
 	try:
-		answer = []
 		thinking = False
-		datas = []
 		async for resp in fetch(question, user, conversation_id):
 			if not thinking:
 				thinking = True
 				yield [MessageSegment.reply(event.message_id), "正在思考..."]
-			datas.append(resp)
-		yield 
-		data = datas[-1]
-		answer = data.get('thought')
+		answer, conversation_id = resp
+		answer = answer.strip().replace('Final Answer: Final Answer: I am thinking about how to help you', '')
 		if not answer:
 			finish([MessageSegment.reply(event.message_id), "回复为空"])
-		conversation_id = data.get('conversation_id')
-		yield [MessageSegment.reply(event.message_id), ''.join(answer)]
+		parse = answer.split('</details>')
+		yield [MessageSegment.reply(event.message_id), parse.pop()]
 		async with session.begin():
 			getId = (await session.scalars(select(ConversationId))).first()
 			if not getId:

@@ -32,7 +32,7 @@ class Fetch:
 	def __init__(self):
 		self.lock = Lock()
 
-	async def __call__(self, question: str, user: str, conversation_id: str|None) -> AsyncGenerator[None|tuple[str, str], None]:
+	async def __call__(self, question: str, user: str, conversation_id: str|None) -> AsyncGenerator[None|tuple[list[str], str], None]:
 		if conversation_id == None:
 			conversation_id = ""
 		data = Data(question=question, user=user, conversation_id=conversation_id)
@@ -40,7 +40,7 @@ class Fetch:
 			async for response in self.main(data):
 				yield response
 
-	async def main(self, data: Data) -> AsyncGenerator[None|tuple[str, str], None]:
+	async def main(self, data: Data) -> AsyncGenerator[None|tuple[list[str], str], None]:
 		headers: dict[str, str] = {
 			"Authorization": f'Bearer {config.key}',
 			"Content-Type": "application/json"
@@ -59,12 +59,17 @@ class Fetch:
 				if resp.status_code != 200:
 					raise StatusError(f"错误，状态码：{resp.status_code}")
 				cacheList = []
+				reList = []
 				async for line in resp.aiter_lines():
 					data = praseData(line)
 					if not data:continue
 					if data['event'] == 'agent_message':
 						cacheList.append(data['answer'])
+					if data['event'] == 'agent_thought':
+						reList.append(''.join(cacheList))
+						cacheList = []
 					if data['event'] == 'message_end':
-						yield (''.join(cacheList), data['conversation_id'])
+						reList.append(''.join(cacheList))
+						yield (reList, data['conversation_id'])
 						return
 					yield None

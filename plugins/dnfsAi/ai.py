@@ -37,10 +37,16 @@ async def ai(event: MessageEvent, session: async_scoped_session):
 			if not thinking:
 				thinking = True
 				yield [MessageSegment.reply(event.message_id), "正在思考..."]
-		answer, conversation_id = resp
-		answer = answer.strip().replace('Final Answer: Final Answer: I am thinking about how to help you', '')
-		if not answer:
-			finish([MessageSegment.reply(event.message_id), "回复为空"])
+		if thinking: yield RecallMsg(0)
+		if not resp: finish([MessageSegment.reply(event.message_id), "回复为空"])
+		answers, conversation_id = resp
+		answers.reverse()
+		for answer in answers:
+			answer = answer.split('</think>').pop().replace('Final Answer:', '').strip()
+			if answer:break
+		else:
+			finish([MessageSegment.reply(event.message_id), '回复为空'])
+
 		parse = answer.split('</details>')
 		yield [MessageSegment.reply(event.message_id), parse.pop()]
 		async with session.begin():
@@ -48,7 +54,6 @@ async def ai(event: MessageEvent, session: async_scoped_session):
 			if not getId:
 				session.add(ConversationId(id=conversation_id))
 			await session.commit()
-		yield RecallMsg(0)
 	except StatusError as e:
 		finish([MessageSegment.reply(event.message_id), str(e)])
 	except (TimeoutError, ReadTimeout) as e:

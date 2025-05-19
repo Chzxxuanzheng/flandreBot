@@ -4,8 +4,10 @@ from typing import Any, Callable, Literal, Optional
 from nonebot.dependencies import Dependent
 from nonebot.permission import Permission
 from nonebot.rule import Rule
-from nonebot.typing import T_Handler, T_PermissionChecker, T_RuleChecker, T_State
+from nonebot.typing import T_Handler, T_PermissionChecker, T_RuleChecker, T_State, Union
 from nonebot.adapters import Message, MessageSegment
+
+import re
 
 # 结束当前处理，发送消息并停止后续的处理函数
 def finish(
@@ -21,7 +23,17 @@ def commandMatcher(
     temp: bool = ...,
     expire_time: datetime | timedelta | None = ...,
     priority: int = ...,
-    block: bool = ...,
+    block: bool = True,
+    state: T_State | None = ...,
+) -> Callable[[Any],T_Handler]: ...
+def regexMatcher(
+	pattern: str,
+    flags: Union[int, re.RegexFlag] = 0,
+	desc: str = ...,
+    rule: Rule | T_RuleChecker | None = ...,
+    handlers: list[T_Handler | Dependent[Any]] | None = ...,
+    temp: bool = ...,
+    expire_time: datetime | timedelta | None = ...,
     state: T_State | None = ...,
 ) -> Callable[[Any],T_Handler]: ...
 # 定义一个消息响应器，用于匹配特定规则的消息并执行相应的处理函数

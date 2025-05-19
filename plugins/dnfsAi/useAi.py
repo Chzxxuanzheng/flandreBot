@@ -73,3 +73,6 @@ class Fetch:
 						yield (reList, data['conversation_id'])
 						return
 					yield None
+				
+				reList.append(''.join(cacheList))
+				yield (reList, data['conversation_id'])

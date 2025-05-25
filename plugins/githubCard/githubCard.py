@@ -2,8 +2,6 @@ from core import regexMatcher
 from nonebot.adapters import Event
 from nonebot.adapters.onebot.v11 import MessageSegment
 from re import search
-from nonebot import logger
-from os import environ
 import httpx
 
 from .config import config
@@ -33,7 +31,7 @@ def getUrl(txt: str) -> str | None:
 
 async def requestImg(url: str):
 	"""请求图片，返回图片"""
-	async with httpx.AsyncClient(proxy=environ.get("PROXY_URL")) as client:
+	async with httpx.AsyncClient(proxy=config.proxy) as client:
 		response = await client.get(url)
 		if response.status_code == 200:
 			return response.content

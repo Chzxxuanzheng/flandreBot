@@ -8,6 +8,7 @@ from .orm import ConversationId
 
 from .config import config
 from .useAi import Fetch, StatusError
+from .md import betterMd
 
 fetch = Fetch()
 
@@ -48,7 +49,7 @@ async def ai(event: MessageEvent, session: async_scoped_session):
 			finish([MessageSegment.reply(event.message_id), '回复为空'])
 
 		parse = answer.split('</details>')
-		yield [MessageSegment.reply(event.message_id), parse.pop()]
+		yield [MessageSegment.reply(event.message_id), *await betterMd(parse[0])]
 		async with session.begin():
 			getId = (await session.scalars(select(ConversationId))).first()
 			if not getId:
@@ -66,7 +67,7 @@ async def ai(event: MessageEvent, session: async_scoped_session):
 		yield [MessageSegment.reply(event.message_id), "未知错误"]
 		raise e
 
-@commandMatcher('ai清除上下文', 'ai清空上下文', desc='清除dnfs社区群内的AI上下文', rule=fromGroup(config.allowGroup) & norRule)
+@commandMatcher('ai清除上下文', 'ai清空上下文', 'ai重置上下文', desc='清除dnfs社区群内的AI上下文', rule=fromGroup(config.allowGroup) & norRule)
 async def ai_clear(event: MessageEvent, session: async_scoped_session):
 	async with session.begin():
 		getId = (await session.scalars(select(ConversationId))).first()

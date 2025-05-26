@@ -3,7 +3,7 @@ name = "flandre"
 version = "0.1.0"
 description = "芙兰天下第一可爱"
 readme = "README.md"
-requires-python = ">=3.8, <4.0"
+requires-python = ">=3.11, <4.0"
 dependencies = [
     "apscheduler>=3.11.0",
     "httpx>=0.28.1",
@@ -12,6 +12,7 @@ dependencies = [
     "nonebot-plugin-alconna>=0.42.4",
     "nonebot-plugin-orm[sqlite]>=0.7.7",
     "nonebot2[fastapi]>=2.2.1",
+    "pillowmd>=0.5.3",
     "pyotp>=2.9.0",
     "toml>=0.10.2",
 ]

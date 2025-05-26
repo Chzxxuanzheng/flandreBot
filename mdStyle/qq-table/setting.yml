@@ -1,0 +1,37 @@
+name: "qq暗色表格" # style名，同时也是id名
+intr: "描述" # style的描述信息
+author: "作者" # style的作者
+version: "1.0" # style的版本号
+
+cost: 100 # style的价格（不知道有什么用X）
+selling: false # 出售中（不知道有什么用X）
+
+fontSize: 25 # 正文字体大小
+
+rd: 0 # 右边距
+ld: 0 # 左边距
+ud: 0 # 上边距
+dd: 0 # 下边距
+
+xSizeMax: 1000 # X轴单行元素最大长度
+
+font: "smSans.ttf" # 正文字体
+titleFont: "smSans.ttf" # 标题字体
+expressionFont: "smSans.ttf" # 表达式字体
+codeFont: "smSans.ttf" # 代码字体
+
+lineDistance: 0 # 行间距
+formLineDistance: 20 # 表格行间距
+formLineColor: [233,233,233] # 表格分割线颜色
+formTextColor: [233,233,233] # 表格文本颜色
+formUnderpainting: [38,38,38] # 表格底色
+formTitleUnderpainting: [255,255,255,20] # 表格标题底色
+
+textColor: [233,233,233] # 文本基础颜色
+
+secondFonts: ["yahei.ttf","unifont.ttf"] # 备用字体列表
+
+fontYCorrect: # 字体Y轴偏移量，正值表示向下偏移，负值表示向上偏移，单位为百分比
+  yahei.ttf: +15 # 微软雅黑偏移（自带的yahei.ttf显示有问题，需要+15%偏移）
+
+backgroudFunc: backgroudFunc # 背景函数，默认值为None，表示不使用背景函数。使用则需要在本目录下添加“style.py”文件，且定义对应的函数，在这里填入函数名。需保证函数的参数为两个int（背景长宽），返回Image对象

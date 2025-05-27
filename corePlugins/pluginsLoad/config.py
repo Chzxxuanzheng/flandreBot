@@ -3,7 +3,7 @@ from nonebot import get_plugin_config
 
 class Config(BaseModel):
 	"""Plugin Config Here"""
-	pluginsPath: str
+	pluginsPath: str = ''
 	testPluginsPath: str = ''
 	testDisablePlugins: list[str] = []
 	isProd: bool

@@ -11,11 +11,12 @@ from uuid import uuid4
 
 @commandMatcher('kd', desc='kd翻译')
 async def main(arg: str = plaintextArg()):
-	yield await translate(arg)
+	logger.info(f"Received translation request: {arg}")
 	try:
-		...
-	except:
-		...
+		yield await translate(arg)
+	except Exception as e:
+		yield "翻译失败"
+		raise e
 
 async def translate(text: str) -> str:
 	async with httpx.AsyncClient() as client:
@@ -34,7 +35,6 @@ async def translate(text: str) -> str:
 		)
 		response.raise_for_status()
 		data = response.json()
-		print(data['errorCode'])
 		if data['errorCode'] == '0':
 			return data['translation'][0]
 		else:

@@ -51,7 +51,6 @@ def plaintext() -> Any:
 def _arg(state: T_State, bot: Bot) -> UniMessage|None:
 	try:
 		args = _command_arg(state)
-		print(type(args))
 	except:
 		return None
 	return UniMessage.generate_sync(message=args, bot=bot)

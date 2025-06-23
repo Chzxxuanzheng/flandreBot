@@ -1,12 +1,18 @@
-from nonebot.adapters.onebot.v11 import MessageEvent, MessageSegment
 from nonebot_plugin_orm import get_session
-from core import finish
+from flandre import Finish
+from flandre.annotated import Uninfo
+from flandre.message import reply
+
+from nonebot_plugin_alconna.uniseg import Text
 
 from .orm import Admin
 
-async def checkAdmin(event:MessageEvent):
+async def checkAdmin(info: Uninfo):
 	session = get_session()
 
 	async with session.begin():
-		if not await session.get(Admin, event.user_id):
-			finish([MessageSegment.reply(event.message_id), '无权操作，请确保你是OP'])
+		if not await session.get(Admin, info.user.id):
+			yield Finish(
+				reply(),
+				Text('无权操作，请确保你是OP')
+			)

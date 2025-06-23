@@ -1,4 +1,5 @@
-from util import baseConfig, BaseModel
+from flandre import baseConfig
+from pydantic import BaseModel
 
 class Rcon(BaseModel):
 	host: str
@@ -7,7 +8,7 @@ class Rcon(BaseModel):
 
 class Forward(BaseModel):
 	chatInfoUrl: str
-	groups: dict[int, str]
+	groups: dict[str, str]
 	sleepTime: float
 	afterSendSleepTime: float
 	reconnectTime: float

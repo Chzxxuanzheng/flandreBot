@@ -1,11 +1,11 @@
-from nonebot.adapters.onebot.v11 import MessageSegment, MessageEvent, Message
+from nonebot.adapters.milky import MessageSegment, MessageEvent, Message
 from nonebot.params import CommandArg
 from nonebot_plugin_orm import async_scoped_session
 from nonebot.log import logger
 from asyncio import sleep
 from sqlalchemy import select
 
-from core import commandMatcher, finish
+from flandre import commandMatcher, finish
 
 from .rcon import rcon
 from .orm import Player

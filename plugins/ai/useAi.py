@@ -6,14 +6,14 @@ from json import loads
 from .model import AiData, AiMessage
 
 from enum import Enum
-class RespStatus(Enum):
-	OK: str = 'ok'
-	ERROR: str = 'error'
-	Done: str = 'done'
+class RespStatus(str, Enum):
+	OK = 'ok'
+	ERROR = 'error'
+	Done = 'done'
 
 class Lock:
 	__locks = {}
-	def __init__(self, id: Optional[int]=None):
+	def __init__(self, id: Optional[str]=None):
 		if id:
 			self.lock: asyncio.Lock = Lock.__locks.setdefault(id, asyncio.Lock())
 
@@ -47,15 +47,19 @@ class RespData:
 				self.type = RespStatus.OK
 				self.data = AiData(**loads(response))
 			except Exception as e:
+				from json import dumps
+				print(dumps(loads(response), indent=2, ensure_ascii=False))
 				self.type = RespStatus.ERROR
 				self.error = e
 
 
-	def __call__(self)-> str:
-		if self.data.choices:
-			if re := self.data.choices[0].delta.content:
-				return re
-		return ''
+	def __call__(self)-> str|None:
+		if not self.data:return None
+		if not self.data.choices:return None
+		if not self.data.choices[0].delta:return None
+
+		return self.data.choices[0].delta.content
+
 
 if __name__ == '__main__':
 	# api = 'https://api.aionline.fun'
@@ -79,14 +83,15 @@ class Fetch:
 		"Content-Type": "application/json"
 	}
 	url = f'{api}/v1/chat/completions'
-	def __init__(self, model: str, content: AiMessage, lock: Optional[int]=None):
+
+	def __init__(self, model: str, content: AiMessage, lock: Optional[str]=None):
 		logger.info(content.model_dump())
 		self.data = {
 			'model': model,
 			'messages': content.model_dump(),
 			"stream": True  # 开启流式输出
 		}
-		self.lock: asyncio.Lock = Lock(lock)
+		self.lock: Lock = Lock(lock)
 
 	async def read(self) -> str:
 		async with self.lock:
@@ -112,7 +117,9 @@ class Fetch:
 								logger.error(f'解析错误:{data.error}')
 								continue
 							elif data.type == RespStatus.OK:
-								for i in data():
+								content = data()
+								if not content:continue
+								for i in content:
 									if i == '\n':
 										yield cache
 										cache = ''
@@ -128,16 +135,8 @@ class Fetch:
 async def useGpt(content: AiMessage) -> str|None:
 	return await Fetch(gpt,content).read()
 
-async def useC(content: AiMessage, id: int) -> AsyncGenerator[str, None]:
+async def useC(content: AiMessage, id: str) -> AsyncGenerator[str, None]:
 	lock = __locks.setdefault(id, asyncio.Lock())
 	async with lock:  # 同步执行相同 id 的请求
 		async for response in Fetch(claude, content, id).stream():
 			yield response
-
-if __name__ == '__main__':
-	async def tmp():
-		async for i in useC('编写一段长度为10行的小故事',[{"role": "user", "content": "芙兰天下第一可爱,因为她是卡哇伊的吸血鬼"}],'Mr.Lee','test'):
-			print(f'|{i}|',end='\n')
-	# async def tmp():
-	# 	print(await useGpt('我是谁?',[{"role": "user", "content": "芙兰天下第一可爱,因为她是卡哇伊的吸血鬼"}],'Mr.Lee'))
-	asyncio.run(tmp())

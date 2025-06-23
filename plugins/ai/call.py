@@ -1,112 +1,118 @@
-from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent, MessageSegment, Message
-from nonebot.params import CommandArg
 from nonebot import logger
 from nonebot_plugin_orm import get_session
+from nonebot_plugin_alconna.uniseg import Reply, get_message_id
 from sqlalchemy import select, desc
 from asyncio import TaskGroup
 
-# from .gpt import useGpt, useC
-# from .config import Config
-
-# from util.send import getId, createMd, createButton, toOffical
-# from util.button import Button
 from .model import AiMessage, AiContent, OrmContent
 from .orm import ChatData
 from .config import config
 from util.rule import norRule
-from core.matcher import commandMatcher
+from flandre.matcher import commandMatcher
+from flandre.annotated import Uninfo, Arg
 
 from .useAi import useGpt, useC
 
 # 定义了一个处理gpt命令的函数，使用norRule作为规则
 @commandMatcher('gpt', 'GPT', 'Gpt', rule=norRule, desc='使用GPT')
-async def gpt(event: MessageEvent, args: Message = CommandArg()):
- msg = event.message_id
- user = event.sender.nickname
- if not (args := args.extract_plain_text()):
-  yield Message([MessageSegment.reply(msg), MessageSegment.text('您需要问gpt什么问题？')])
-  return
- context = await __createContexts(__getId(event), 'gpt')
- context.append(__userContext(user, args))
- try:
-  out = await useGpt(context)
- except Exception as e:
-  logger.error(e)
-  yield Message([MessageSegment.reply(msg), MessageSegment.text('gpt错误')])
-  return
- if out == None:
-  yield Message([MessageSegment.at(2431149266), MessageSegment.text('gpt错误')])
- 
- logger.info(out)
- await __addHistory(__getId(event), 'gpt', OrmContent(role='user', content=args, user=user))
- await __addHistory(__getId(event), 'gpt', OrmContent(role='assistant', content=out))
- send = Message([MessageSegment.reply(msg), MessageSegment.text(out)])
- yield send
+async def gpt(session: Uninfo, args: Arg):
+	if session.user.nick:
+		user = session.user.nick
+	elif session.user.name:
+		user = session.user.name
+	else:
+		user = session.user.id
+	if not (arg := args.extract_plain_text()):
+		yield [
+			Reply(get_message_id()),
+			'您需要问gpt什么问题？'
+		]
+		return
+	context = await __createContexts(session.user.id, 'gpt')
+	context.append(__userContext(user, arg))
+	try:
+		out = await useGpt(context)
+	except Exception as e:
+		logger.error(e)
+		yield [
+			Reply(get_message_id()),
+			'gpt错误'
+		]
+		return
+	if not out:
+		yield [
+			'gpt错误'
+		]
+		return
+	
+	logger.success(f'GPT响应: {out}')
+	await __addHistory(session.user.id, 'gpt', OrmContent(role='user', content=arg, user=user))
+	await __addHistory(session.user.id, 'gpt', OrmContent(role='assistant', content=out))
+	yield [
+		Reply(get_message_id()),
+		out
+	]
 
 
 # 定义了一个清除gpt上下文的函数
 @commandMatcher('gpt清除上下文', 'GPT清除上下文', 'Gpt清除上下文', rule=norRule, desc='清除GPT上下文')
-async def clearContext(event: MessageEvent):
- await __clearHistory(__getId(event), 'gpt')
- yield Message([MessageSegment.reply(event.message_id),'上下文已清除'])
+async def clearContext(session: Uninfo):
+	await __clearHistory(session.user.id, 'gpt')
+	yield [
+		Reply(get_message_id()),
+		'上下文已清除'
+	]
 
 # 创建上下文信息
-async def __createContexts(id: int, model: str) -> AiMessage:
- context = await __getHistory(id, model)
- context.append(__context(config.exSetting, 'system'))
- return context
+async def __createContexts(id: str, model: str) -> AiMessage:
+	context = await __getHistory(id, model)
+	context.append(__context(config.exSetting, 'system'))
+	return context
 
 # 获取历史聊天记录
-async def __getHistory(id: int, model: str) -> AiMessage:
- session = get_session()
- async with session.begin():
-  history = (await session.scalars(
-   select(ChatData)
-   .where(ChatData.id == id and ChatData.model == model)
-   .order_by(desc(ChatData.date))
-   .limit(config.contextLong)
-  )).all()
-  return AiMessage(history)
+async def __getHistory(id: str, model: str) -> AiMessage:
+	session = get_session()
+	async with session.begin():
+		history = (await session.scalars(
+			select(ChatData)
+			.where(ChatData.id == id and ChatData.model == model)
+			.order_by(desc(ChatData.date))
+			.limit(config.contextLong)
+		)).all()
+		return AiMessage(history)
 
 # 添加聊天记录到数据库
-async def __addHistory(id: int, model: str, data: OrmContent) -> None:
- session = get_session()
- async with session.begin():
-  history = ChatData(id=id, data=data, model=model)
-  session.add(history)
-  await session.commit()
+async def __addHistory(id: str, model: str, data: OrmContent) -> None:
+	session = get_session()
+	async with session.begin():
+		history = ChatData(id=id, data=data, model=model)
+		session.add(history)
+		await session.commit()
 
 # 清除指定用户的聊天记录
-async def __clearHistory(id: int, model: str) -> None:
- session = get_session()
- async with session.begin():
-  history = (await session.scalars(
-   select(ChatData)
-   .where(ChatData.id == id and ChatData.model == model)
-   .order_by(desc(ChatData.date))
-  )).all()
-  async with TaskGroup() as tg:
-   for i in history: tg.create_task(session.delete(i))
-  await session.commit()
+async def __clearHistory(id: str, model: str) -> None:
+	session = get_session()
+	async with session.begin():
+		history = (await session.scalars(
+			select(ChatData)
+			.where(ChatData.id == id and ChatData.model == model)
+			.order_by(desc(ChatData.date))
+		)).all()
+		async with TaskGroup() as tg:
+			for i in history: tg.create_task(session.delete(i))
+		await session.commit()
 
 # 创建用户聊天内容
 def __userContext(user: str, content: str) -> AiContent:
- return __context(f'{user}:\n{content}', 'user')
+	return __context(f'{user}:\n{content}', 'user')
 
 # 创建AiContent对象
 def __context(content: str, role: str = 'user') -> AiContent:
- # 这里是创建一个AiContent对象
- if role not in ['user', 'assistant', 'system']:
-  raise ValueError(f"非法的role参数({role}). 必须是'user' 'assistant' 'system'.")
- return AiContent(role=role, content=content)
+	# 这里是创建一个AiContent对象
+	if role not in ['user', 'assistant', 'system']:
+		raise ValueError(f"非法的role参数({role}). 必须是'user' 'assistant' 'system'.")
+	return AiContent(role=role, content=content)
 
-# 获取用户或群组的id
-def __getId(event: MessageEvent) -> int:
- # 这里是获取id的函数
- if isinstance(event, GroupMessageEvent):
-  return event.group_id
- else:
-  return event.user_id
 # gpt = on_command("gpt", aliases=set(['GPT', 'Gpt']), rule=norRule)
 # c = on_command("c", aliases=set(['C']), rule=norRule)
 # cCharaSetting = on_command("c人设", aliases=set(['C人设']), rule=norRule)

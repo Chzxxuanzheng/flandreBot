@@ -13,8 +13,7 @@ __plugin_meta__ = PluginMetadata(
 config = get_plugin_config(Config)
 
 from .useRcon import *
-from .groupToMc import *
-from .mcToGrouo import *
+from .forward import *
 from .adminManager import *
-from .auth import *
+# from .auth import *
 from .orm import *

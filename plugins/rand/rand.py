@@ -1,7 +1,7 @@
 from nonebot.adapters import Message
-from nonebot.adapters.onebot.v11 import MessageSegment, MessageEvent
+from nonebot.adapters.milky import MessageSegment, MessageEvent
 from nonebot.params import CommandArg
-from core.matcher import commandMatcher
+from flandre.matcher import commandMatcher
 
 from random import randint
 

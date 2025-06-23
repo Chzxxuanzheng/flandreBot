@@ -1,4 +1,4 @@
-from core.matcher import commandMatcher
+from flandre.matcher import commandMatcher
 from util.rule import norRule
 
 from nonebot.params import CommandArg

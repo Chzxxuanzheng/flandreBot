@@ -1,6 +1,6 @@
 from asyncio import sleep
 from nonebot import require, get_bots
-from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Message
+from nonebot.adapters.milky import MessageSegment, Bot, Message
 from random import randint as rand
 
 from .config import Config

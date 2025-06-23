@@ -8,20 +8,14 @@ dependencies = [
     "apscheduler>=3.11.0",
     "httpx>=0.28.1",
     "mcrcon>=0.7.0",
-    "nonebot-adapter-onebot>=2.4.3",
-    "nonebot-plugin-alconna>=0.42.4",
+    "nonebot-adapter-milky>=0.3.0",
+    "nonebot-adapter-minecraft>=1.4.1",
+    "nonebot-adapter-onebot>=2.4.6",
+    "nonebot-plugin-alconna>=0.58.4",
     "nonebot-plugin-orm[sqlite]>=0.7.7",
-    "nonebot2[fastapi]>=2.2.1",
+    "nonebot-plugin-uninfo>=0.8.0",
+    "nonebot2[httpx,websockets]>=2.4.2",
     "pillowmd>=0.5.3",
     "pyotp>=2.9.0",
     "toml>=0.10.2",
 ]
-
-[tool.nonebot]
-adapters = [
-    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" }
-]
-drivers = [
-	{ name = "fastapi", module_name = "nonebot.drivers.fastapi" }
-]
-plugin_dirs = ["corePlugins"]

@@ -1,0 +1,17 @@
+#!.venv/bin/python
+
+import sys
+from pathlib import Path
+
+root = Path(__file__).parent  # 注意此处为你的项目目录，即 bot.py 所在目录
+
+sys.path.append(str(root))
+
+import bot
+
+# isort: split
+
+from nonebot_plugin_orm.__main__ import main
+
+if __name__ == "__main__":
+    main()

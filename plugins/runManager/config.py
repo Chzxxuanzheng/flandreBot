@@ -1,4 +1,4 @@
-from util import baseConfig
+from flandre import baseConfig
 
 
 class Config(baseConfig("runManager")):

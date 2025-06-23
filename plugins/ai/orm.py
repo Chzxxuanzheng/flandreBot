@@ -8,12 +8,12 @@ class ChatData(Model):
 	pk: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 	date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now)
 	model: Mapped[str] = mapped_column(nullable=False)
-	id: Mapped[int] = mapped_column(nullable=False)
+	id: Mapped[str] = mapped_column(nullable=False)
 	role: Mapped[str] = mapped_column(nullable=False)
 	content: Mapped[str] = mapped_column(nullable=False)
 	user: Mapped[str] = mapped_column(nullable=True)
 
-	def __init__(self, id: int, data, model: str):
+	def __init__(self, id: str, data, model: str):
 		self.model = model
 		self.id = id
 		self.role = data.role

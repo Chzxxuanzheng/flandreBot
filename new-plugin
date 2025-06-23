@@ -1,0 +1,77 @@
+#!/usr/bin/env -S uv run --script
+
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "typer",
+#     "rich"
+# ]
+# ///
+
+from rich.console import Console
+from typer import Typer, prompt, Argument
+from os import mkdir
+from os.path import exists
+
+PLUGIN_DIR = './testPlugins'
+
+# 初始化 Typer 和 Rich Console
+app = Typer()
+console = Console()
+
+@app.command()
+def init(plugin_name: str = Argument(None, help="插件名称")):
+	"""
+	初始化插件。若没有传入插件名称或无效，则交互式要求输入插件名称。
+	"""
+	# 如果插件名称未传入或无效
+	if not plugin_name or not plugin_name.isidentifier():
+		plugin_name = prompt("[bold green]请输入合法的插件名称[bold green]")
+	
+	# 如果最终插件名称还是非法的，重复提示
+	while not plugin_name.isidentifier():
+		console.print("[bold red]插件名称无效！必须是有效的 Python 标识符！[/bold red]")
+		plugin_name = prompt("请重新输入插件名称")
+	
+	createPlugin(plugin_name)
+	# 压制结果，假设创建功能下次补充，直接打印插件名称
+	console.print(f"[bold green]插件已创建:[/bold green] {plugin_name}")
+	
+def createPlugin(name: str):
+	
+	if exists(f'{PLUGIN_DIR}/{name}'):
+		console.print(f"[bold red]插件 {name} 已存在！[/bold red]")
+		exit(1)
+	else:
+		mkdir(f'{PLUGIN_DIR}/{name}')
+
+	files = {}
+	files['__init__.py'] = f'''from nonebot.plugin import PluginMetadata
+
+from .config import Config, config
+
+__plugin_meta__ = PluginMetadata(
+	name="{name}",
+	description="",
+	usage="",
+	config=Config,
+)
+
+from .{name} import *'''
+	files['config.py'] = f'''from flandre import baseConfig
+
+
+class Config(baseConfig("{name}")):
+	"""Plugin Config Here"""
+
+config = Config.getConfig()'''
+	files[f'{name}.py'] = '''from .config import config
+from nonebot import logger'''
+
+	for file, content in files.items():
+		with open(f'{PLUGIN_DIR}/{name}/{file}', 'w') as f:
+			f.write(content)
+
+if __name__ == "__main__":
+	app()
+

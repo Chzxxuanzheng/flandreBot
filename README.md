@@ -1,6 +1,6 @@
 # Flandre Scarlet
 
-`Flandre Scarlet`是一个基于`OneBotV11`协议的`Nonebot`框架的QQ机器人
+`Flandre Scarlet`是一个基于`Milky`协议的`Nonebot`框架的QQ机器人
 ## How to start
 
 1. generate project using `nb create` .
@@ -10,3 +10,5 @@
 ## Documentation
 
 See [Docs](https://nonebot.dev/)
+
+$\ce{H2O}$

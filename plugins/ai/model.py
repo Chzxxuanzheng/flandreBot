@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Sequence
+from typing import Sequence, override
 
 
 class ChoiceDelta(BaseModel):
@@ -19,11 +19,11 @@ class CompletionTokensDetails(BaseModel):
 	text_tokens: int
 	audio_tokens: int
 class AiDataUsage(BaseModel):
-	prompt_tokens: int
-	completion_tokens: int
-	total_tokens: int
-	prompt_tokens_details: PromptTokensDetails
-	completion_tokens_details: CompletionTokensDetails
+	prompt_tokens: int|None = None
+	completion_tokens: int|None = None
+	total_tokens: int|None = None
+	prompt_tokens_details: PromptTokensDetails|None = None
+	completion_tokens_details: CompletionTokensDetails|None = None
 class AiData(BaseModel):
 	id: str
 	object: str
@@ -52,8 +52,9 @@ class AiMessage(BaseModel):
 	def append(self, content: AiContent):
 		self.content.append(content)
 
-	def model_dump(self):
-		return super().model_dump()['content']
+	@override
+	def model_dump(self, *args, **kwargs):
+		return super().model_dump(*args,**kwargs)['content']
 	
 class OrmContent(BaseModel):
 	"""ORM内容"""

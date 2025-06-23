@@ -1,5 +1,6 @@
 from nonebot import on_message
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, Message, MessageSegment
+from nonebot.adapters.milky import Message, MessageSegment
+from nonebot.adapters.milky.event import GroupMessageEvent
 from nonebot import logger
 from util.api import getForwardMsg, getGroupMemberName
 from util.rule import fromGroup

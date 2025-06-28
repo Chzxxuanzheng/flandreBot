@@ -38,13 +38,12 @@ async def translate(text: str) -> str:
 		if data['errorCode'] == '0':
 			return data['translation'][0]
 		else:
-			logger.error(f"Translation error: {data['msg']}")
-			return f"Error: {data['msg']}"
+			raise Exception(f"Translation error. error code: {data['errorCode']}")
 
 def sign(data: dict):
 	from hashlib import sha256
 	originData = data.copy()
 	if len(data['q']) > 20:
-		originData['q'] = originData['q'][-10:]
+		originData['q'] = originData['q'][:10] + str(len(originData['q'])) + originData['q'][-10:]
 	data['signType'] = 'v3'
 	data['sign'] = sha256(f"{originData['appKey']}{originData['q']}{originData['salt']}{originData['curtime']}{config.key}".encode('utf-8')).hexdigest()

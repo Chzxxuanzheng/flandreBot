@@ -47,7 +47,10 @@ async def main(info: Uninfo, argMsg: Arg):
 	if arg[0] == '/':
 		slashStart = True
 		arg = arg[1:]
+	
+	await rcon.connect()
 	resp, _ = await rcon.send_cmd(cmd=arg)
+
 	if resp == '':
 		resp = '[无返回结果]'
 	elif resp == 'Unknown command. Type "/help" for help.':

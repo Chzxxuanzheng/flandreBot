@@ -1,7 +1,8 @@
 from nonebot.typing import T_Handler, T_State
-from nonebot.adapters import Bot, Event
+from nonebot.adapters import Bot
+from nonebot.internal.matcher import current_event, current_bot
 from nonebot_plugin_alconna.uniseg import Target, SupportScope
-from nonebot_plugin_uninfo import Uninfo, Session, get_session
+from nonebot_plugin_uninfo import Session, get_session
 from typing import Callable, Literal, Type, Iterable, TYPE_CHECKING
 from functools import wraps
 from nonebot import on as on
@@ -53,8 +54,10 @@ def matcherMakerFactory(matcherMaker: MatcherMaker)-> MatcherDecoratorMaker:
 		def decorator(func: T_Handler)-> T_Handler:
 			# 创建sender
 			@matcher.handle()
-			async def info(bot: Bot, event: Event, state: T_State):
+			async def info(state: T_State):
 				nonlocal sender
+				bot = current_bot.get()
+				event = current_event.get()
 				current_di_arg.set(T_DIArg(bot=bot, event=event, state=state))
 				defaultTarget = None
 				try:

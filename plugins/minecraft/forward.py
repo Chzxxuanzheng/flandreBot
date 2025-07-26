@@ -4,7 +4,7 @@ from nonebot.rule import Rule
 from nonebot.internal.matcher import current_bot, current_event
 from nonebot.adapters.minecraft.event.base import BasePlayerCommandEvent
 from nonebot_plugin_uninfo import SupportScope, get_interface, Interface
-from nonebot_plugin_alconna.uniseg import UniMsg, UniMessage, Target, Segment, Text, At, AtAll, Image, Voice, Video, File, Reply
+from nonebot_plugin_alconna.uniseg import UniMsg, UniMessage, Target, Segment, Text, At, AtAll, Image, Reply
 
 from typing import Iterable
 

@@ -1,6 +1,7 @@
 from typing import Iterable
-
-from nonebot_plugin_alconna.uniseg import Segment, Text, UniMessage, Reply, get_message_id
+from nonebot.adapters import Bot
+from nonebot.internal.matcher import current_bot
+from nonebot_plugin_alconna.uniseg import Segment, Text, UniMessage, Reply, get_message_id, Reference, CustomNode
 
 type seg = Segment|str|int
 type Msg = UniMessage|Iterable[seg]|seg
@@ -51,3 +52,20 @@ def toPlaintext(msg: UniMessage) -> str:
 def reply() -> Reply:
 	"""返回一个当前消息的回复消息"""
 	return Reply(get_message_id())
+
+def selfForward(*msg: Msg, bot: Bot|None = None) -> UniMessage:
+	"""返回一个自身合并转发消息"""
+	if bot is None:
+		bot = current_bot.get()
+	forward = []
+	for m in msg:
+		node = CustomNode(
+			uid=bot.self_id,
+			name='合并转发',
+			content=toUniMsg(m),
+		)
+	return UniMessage(
+		Reference(
+			nodes=forward,
+		)
+	)

@@ -71,6 +71,13 @@ def plaintextArg() -> Any:
 	"""获取指令Matcher参数的纯文本内容"""
 	return Depends(_plaintextArg)
 
+async def _tome(event: Event) -> bool:
+	return event.is_tome()
+
+def tome() -> Any:
+	"""判断当前事件是否为@Bot的消息"""
+	return Depends(_tome)
+
 async def _members(interface: QryItrface, info: Uninfo) -> list[Member]|None:
 	if not info.group:return
 	return await interface.get_members(info.scene.type, info.group.id)

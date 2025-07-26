@@ -12,6 +12,7 @@ from .config import config
 from util.rule import norRule
 from flandre.matcher import commandMatcher
 from flandre.rule import scope
+from flandre.message import selfForward
 
 rule = norRule & scope('QQClient')
 
@@ -36,7 +37,7 @@ async def main(path: str, num: int):
 			for i in imgs:
 				yield i
 		else:
-			yield 'TODO Implement self forward'
+			yield selfForward(*imgs)
 	except:
 		yield '发生图片失败'
 		raise

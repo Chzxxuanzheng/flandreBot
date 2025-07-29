@@ -5,6 +5,7 @@ from matcher.connectMatcher import connectMatcher as connectMatcher
 from matcher.timerMatcher import cronMatcher as cronMatcher, intervalMatcher as intervalMatcher
 from matcher.errorMatcher import matcherErrorMatcher as matcherErrorMatcher
 from matcher.regexMatcher import regexMatcher as regexMatcher
+from matcher.noticeMatcher import noticeMatcher as noticeMatcher
 from matcher.matchers import target as target
 from .config import baseConfig as baseConfig
 

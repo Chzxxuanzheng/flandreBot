@@ -10,6 +10,7 @@ from .errorMatcher import matcherErrorMatcher as matcherErrorMatcher
 from .regexMatcher import regexMatcher as regexMatcher
 from .timerMatcher import intervalMatcher as intervalMatcher, cronMatcher as cronMatcher
 from .messageMatcher import messageMatcher as messageMatcher
+from .noticeMatcher import noticeMatcher as noticeMatcher
 
 def target(msgType: Literal['group','private'], id: int|str, platform: ScopeLiteral|SupportScope = ...)-> Target:...
 

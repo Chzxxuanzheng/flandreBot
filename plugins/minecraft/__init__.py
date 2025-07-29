@@ -15,5 +15,6 @@ config = get_plugin_config(Config)
 from .useRcon import *
 from .forward import *
 from .adminManager import *
+from .notice import *
 # from .auth import *
 from .orm import *

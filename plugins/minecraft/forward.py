@@ -1,8 +1,8 @@
-from flandre import messageMatcher
+from flandre import messageMatcher, Finish
 from flandre.annotated import Uninfo
 from nonebot.rule import Rule
 from nonebot.internal.matcher import current_bot, current_event
-from nonebot.adapters.minecraft.event.base import BasePlayerCommandEvent
+from nonebot.adapters.minecraft.event.base import BasePlayerCommandEvent, BaseDeathEvent
 from nonebot_plugin_uninfo import SupportScope, get_interface, Interface
 from nonebot_plugin_alconna.uniseg import UniMsg, UniMessage, Target, Segment, Text, At, AtAll, Image, Reply
 
@@ -29,10 +29,12 @@ async def forward(session: Uninfo, msg: UniMsg):
 
 
 async def mcToQQ(session: Uninfo, msg: UniMsg):
-	# 过滤指令
-	if isinstance(current_event.get(), BasePlayerCommandEvent):return
 	name = session.user.name
 	if not name:raise ValueError('User name is required for forwarding messages from Minecraft to QQ.')
+	# 过滤指令
+	if isinstance(current_event.get(), BasePlayerCommandEvent): return
+	if isinstance(current_event.get(), BaseDeathEvent):
+		yield Finish(joke(name, str(msg)))
 	msg = UniMessage(f'[{name}] ') + msg
 	for group in config.forward.groups.keys():
 		yield Target.group(str(group), SupportScope.qq_client)
@@ -146,6 +148,42 @@ def mcMsg(content: str)-> Text:
 		if char.isprintable() or char=='\n':text += char
 	return Text(content)
 
+# 嘲笑某人
+def joke(name: str, content: str) -> str:
+	from random import choice
+	list = [
+        '很不幸,{content}',
+        '今天是{name}的幸运日,{content}',
+        '{name}又出事了,{content}',
+        '今天是一个好日子,所以{content}',
+        '不出所料,{content}',
+        '果然,{content}',
+        '毫无意外,{content}',
+        '正如大家所料,{content}',
+        '看起来,{content}',
+        '显然,{content}',
+        '终于,{content}',
+        '哎呀,{content}',
+        '噢不,{content}',
+        '我就知道,{content}',
+        '不意外,{content}',
+        '啊这,{content}',
+        'emmm,{content}',
+        '好家伙,{content}',
+        '真巧,{content}',
+        '刚刚,{content}',
+        '突然,{content}',
+        '瞬间,{content}',
+        '一不小心,{content}',
+        '看样子,{content}',
+        '据说,{content}',
+        '传言,{content}',
+        '听说,{content}',
+        '有消息称,{content}',
+        '让我们为{name}默哀0秒,{content}',
+    ]
+	return choice(list).format(name=name, content=content)
+	
 
 import unicodedata
 

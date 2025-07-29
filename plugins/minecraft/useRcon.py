@@ -47,7 +47,8 @@ async def main(info: Uninfo, argMsg: Arg):
 	if arg[0] == '/':
 		slashStart = True
 		arg = arg[1:]
-	
+
+	await rcon.close()
 	await rcon.connect()
 	resp, _ = await rcon.send_cmd(cmd=arg)
 

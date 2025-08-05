@@ -14,7 +14,7 @@ class StatusError(Exception):
 	def __str__(self):
 		return f"错误，状态码：{self.code}"
 
-pattern = r"(?:https?://)?github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)"
+pattern = r"(?:https?://)?github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)(?:\.git)?(?:/|$)"
 
 voidImg: bytes
 basePath = __file__.rsplit('/', 1)[0]

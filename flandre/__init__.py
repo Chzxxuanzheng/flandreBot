@@ -19,6 +19,8 @@ def init(*adapters: Type[Adapter], **kwargs: Any):
 	nonebot.init(**config) # type: ignore
 	initModule.nowSate = initModule.InitState.AfterNbInit
 
+	import nonebot_plugin_exdi as _
+
 	# 注册适配器
 	config = Config(**config) # type: ignore
 	driver = nonebot.get_driver()

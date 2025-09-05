@@ -53,7 +53,7 @@ def _arg(state: T_State, bot: Bot) -> UniMessage|None:
 		args = _command_arg(state)
 	except:
 		return None
-	return UniMessage.generate_sync(message=args, bot=bot)
+	return UniMessage.of(message=args, bot=bot)
 
 def arg() -> Any:
 	return Depends(_arg)

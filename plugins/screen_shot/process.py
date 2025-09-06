@@ -40,10 +40,10 @@ def add_natural_glare(img, intensity=0.5):
 	out = Image.alpha_composite(pil_img, overlay)
 	return cv2.cvtColor(np.array(out.convert('RGB')), cv2.COLOR_RGB2BGR)
 
-def add_blur(img, ksize=11):
+def add_blur(img):
 	pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)).convert('RGBA')
 	w, h = pil_img.size
-	ksize = min(w//50*2+1, h//50*2+1)  # 保证ksize不超过图像尺寸且为奇数
+	ksize = min(w//100*2+1, h//100*2+1)  # 保证ksize不超过图像尺寸且为奇数
 	return cv2.GaussianBlur(img, (ksize, ksize), 0)
 
 def add_moire(img, strength=0.2):
@@ -65,11 +65,8 @@ def add_moire(img, strength=0.2):
 
 def process(path: str):
 	img = cv2.imread(path)
-	img = add_natural_glare(img, 5)
-	img = random_perspective(img, 0.4)
-	img = add_blur(img, ksize=np.random.choice([15, 21, 27]))
 	img = add_moire(img)
+	img = add_natural_glare(img, 5)
+	img = add_blur(img)
+	img = random_perspective(img, 0.4)
 	cv2.imwrite(path, img)
-
-if __name__ == "__main__":
-	process("/home/lee/project/qBot/nb/disablePlugins/tohoschedule/ad.webp", "output.jpg")

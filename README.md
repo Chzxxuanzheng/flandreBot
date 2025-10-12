@@ -1,14 +1,7 @@
-# Flandre Scarlet
-
-`Flandre Scarlet`是一个基于`Milky`协议的`Nonebot`框架的QQ机器人
-## How to start
-
-1. generate project using `nb create` .
-2. install plugins using `nb plugin install` .
-3. run your bot using `nb run` .
-
-## Documentation
-
-See [Docs](https://nonebot.dev/)
-
-$\ce{H2O}$
+<p align="center">
+    <img src="icon.png" alt="Logo" width="256">
+    <h2 align="center" style="font-weight: 600">Flandre Scarlet</h2>
+    <p align="center">
+        一个基于alc的跨协议`Nonebot`框架的QQ机器人
+    </p>
+</p>

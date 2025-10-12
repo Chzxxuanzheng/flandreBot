@@ -32,7 +32,7 @@ Uninfo = Annotated[Session, Depends(_uninfo)]
 def _basicInfo(bot: Bot) -> _BasicInfo|None:
 	adapter = bot.adapter.get_name()
 	fetcher = INFO_FETCHER_MAPPING.get(adapter)
-	assert fetcher
+	if not fetcher: return None
 	return _BasicInfo(**fetcher.supply_self(bot))
 
 

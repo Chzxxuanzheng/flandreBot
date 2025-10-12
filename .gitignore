@@ -8,9 +8,12 @@ migrations
 config.toml
 db.sqlite3
 tmp.py
+data
 
 bot.lock
 testPlugins.py
 
 tmp
 testPlugin.py
+
+start.sh

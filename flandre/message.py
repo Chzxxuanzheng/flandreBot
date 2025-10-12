@@ -64,6 +64,7 @@ def selfForward(*msg: Msg, bot: Bot|None = None) -> UniMessage:
 			name='合并转发',
 			content=toUniMsg(m),
 		)
+		forward.append(node)
 	return UniMessage(
 		Reference(
 			nodes=forward,

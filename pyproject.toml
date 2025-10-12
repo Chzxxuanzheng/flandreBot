@@ -6,15 +6,18 @@ readme = "README.md"
 requires-python = ">=3.11, <4.0"
 dependencies = [
     "apscheduler>=3.11.0",
+    "google-api-python-client>=2.181.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.2",
     "httpx>=0.28.1",
     "mcrcon>=0.7.0",
-    "nonebot-adapter-milky>=0.3.0",
+    "nonebot-adapter-milky>=0.5.0rc2",
     "nonebot-adapter-minecraft>=1.5.1",
     "nonebot-adapter-onebot>=2.4.6",
     "nonebot-plugin-alconna>=0.58.4",
     "nonebot-plugin-exdi>=0.1.4",
     "nonebot-plugin-orm[sqlite]>=0.7.7",
-    "nonebot-plugin-uninfo>=0.8.0",
+	"nonebot-plugin-uninfo @ git+https://github.com/RF-Tar-Railt/nonebot-plugin-uninfo.git@5b87d916af09d6a878039d3445193efda2ed1af3",
     "nonebot2[httpx,websockets]>=2.4.2",
     "numpy>=2.3.2",
     "opencv-python>=4.11.0.86",
@@ -22,3 +25,6 @@ dependencies = [
     "pyotp>=2.9.0",
     "toml>=0.10.2",
 ]
+
+[[tool.uv.index]]
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"

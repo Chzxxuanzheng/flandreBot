@@ -25,7 +25,8 @@ async def screen_shot(msgs: UniMessage = arg()):
 	(await style.AioRender(txt, useImageUrl=True)).image.save(img.name)
 	logger.success(f'生成md图片: {img.name}')
 	process(img.name)
-	yield Image(path=img.name)
+	with open(img.name, 'rb') as f:
+		yield Image(raw=f.read())
 	for f in cacheData[id]:
 		f.close()
 

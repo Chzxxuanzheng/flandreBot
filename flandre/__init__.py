@@ -1,14 +1,21 @@
 import nonebot
-from nonebot import logger
 from nonebot.adapters import Adapter
 import flandre.init.init as initModule
 from asyncio import get_event_loop
 from importlib import import_module
-from typing import Any, Type, TYPE_CHECKING
+from typing import Any, Type
 
 from .configLoader import loadConfig
 from .lock import ProcessLock
 from .config import Config
+
+# Flandre 本身依赖的插件列表
+REQUIRE_PLUGINS = [
+	'nonebot_plugin_orm',
+	'nonebot_plugin_alconna',
+	'nonebot_plugin_exdi',
+	'nonebot_plugin_uninfo',
+]
 
 def init(*adapters: Type[Adapter], **kwargs: Any):
 	# 覆盖nb
@@ -19,6 +26,11 @@ def init(*adapters: Type[Adapter], **kwargs: Any):
 	nonebot.init(**config) # type: ignore
 	initModule.nowSate = initModule.InitState.AfterNbInit
 
+	# 加载必须插件
+	for requirePlugin in REQUIRE_PLUGINS:
+		nonebot.require(requirePlugin)
+
+	# 初始化exdi
 	import nonebot_plugin_exdi as _
 
 	# 注册适配器

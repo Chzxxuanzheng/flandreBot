@@ -127,7 +127,7 @@ def loadMaker(__PluginStatus: dict[str, Exception|None]):
 			__reapeat.record(name, e)
 	return load_plugin
 
-nonebot.plugin.load.PluginManager.load_plugin = loadMaker(__PluginStatus) # type: ignore
+nonebot.plugin.manager.PluginManager.load_plugin = loadMaker(__PluginStatus) # type: ignore
 
 class DisablePlugin(Exception):
 	def __init__(self, resaon: str = '未知原因'):

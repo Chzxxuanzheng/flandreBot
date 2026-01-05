@@ -4,7 +4,6 @@ from .config import config
 from .report import getPluginLoadReport
 
 def loadPluginsFromConfig():
-	load_plugin('nonebot_plugin_orm')
 	if not config.pluginsPath:
 		logger.opt(colors=True).warning("<y>未设置pluginsPath</y>，生产环境下将不会加载任何插件")
 	else:

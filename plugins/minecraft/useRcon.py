@@ -1,7 +1,7 @@
+from typing import cast
 from nonebot.params import CommandArg
-from nonebot.adapters import Message
 from nonebot.adapters.minecraft.bot import Bot
-from aiomcrcon import Client
+from nonebot import get_bot
 from nonebot import logger
 
 from flandre import commandMatcher, connectMatcher, Finish
@@ -15,24 +15,11 @@ from .permissionCheck import checkAdmin
 
 rule = norRule & scope('QQClient')
 
-rcon: Client|None = None
-
-@connectMatcher('Minecraft', desc='获取rcon')
-async def getRcon(bot: Bot):
-	global rcon
-	rcon = bot.rcon
-
 @commandMatcher('rcon', rule=rule, desc='执行rcon指令')
 async def main(info: Uninfo, argMsg: Arg):
-
 	yield checkAdmin(info)
 
-	if not rcon:
-		yield Finish(
-			reply(),
-			'未连接到rcon',
-		)
-		return
+	bot: Bot = cast(Bot, get_bot('Server'))
 
 	arg = toPlaintext(argMsg)
 
@@ -48,9 +35,7 @@ async def main(info: Uninfo, argMsg: Arg):
 		slashStart = True
 		arg = arg[1:]
 
-	await rcon.close()
-	await rcon.connect()
-	resp, _ = await rcon.send_cmd(cmd=arg)
+	resp = await bot.send_rcon_command(command=arg)
 
 	if resp == '':
 		resp = '[无返回结果]'

@@ -1,17 +1,16 @@
 from flandre import noticeMatcher
 from nonebot.rule import Rule
-from nonebot.adapters.minecraft.event.base import BaseJoinEvent
-from nonebot.adapters.minecraft.event.spigot import PlayerJoinEvent
+from nonebot.adapters.minecraft.event import PlayerJoinEvent
 from nonebot_plugin_alconna.uniseg import Target, SupportScope
 
 from .config import config
 
-async def rule(event: BaseJoinEvent):
+async def rule(event: PlayerJoinEvent):
 	print(f'玩家 {event.player.nickname} 加入游戏')
 	return True
 
 @noticeMatcher(desc='Mc加入游戏提示', rule=Rule(rule), priority=20, block=False)
-async def forward(event: BaseJoinEvent):
+async def forward(event: PlayerJoinEvent):
 	for group in config.forward.groups.keys():
 		yield Target.group(str(group), SupportScope.qq_client)
 		yield joinMsg(event.player.nickname)

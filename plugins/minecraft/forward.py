@@ -2,7 +2,7 @@ from flandre import messageMatcher, Finish
 from flandre.annotated import Uninfo
 from nonebot.rule import Rule
 from nonebot.internal.matcher import current_bot, current_event
-from nonebot.adapters.minecraft.event.base import BasePlayerCommandEvent, BaseDeathEvent
+from nonebot.adapters.minecraft.event import PlayerCommandEvent, PlayerDeathEvent
 from nonebot_plugin_uninfo import SupportScope, get_interface, Interface
 from nonebot_plugin_alconna.uniseg import UniMsg, UniMessage, Target, Segment, Text, At, AtAll, Image, Reply
 
@@ -32,8 +32,8 @@ async def mcToQQ(session: Uninfo, msg: UniMsg):
 	name = session.user.name
 	if not name:raise ValueError('User name is required for forwarding messages from Minecraft to QQ.')
 	# 过滤指令
-	if isinstance(current_event.get(), BasePlayerCommandEvent): return
-	if isinstance(current_event.get(), BaseDeathEvent):
+	if isinstance(current_event.get(), PlayerCommandEvent): return
+	if isinstance(current_event.get(), PlayerDeathEvent):
 		yield Finish(joke(name, str(msg)))
 	msg = UniMessage(f'[{name}] ') + msg
 	for group in config.forward.groups.keys():
@@ -106,11 +106,10 @@ async def createReply(reply: Reply, session: Uninfo, interface: Interface) -> It
 async def getReplyMsg(reply: Reply, session: Uninfo, interface: Interface) -> Iterable[Text]:
 	if not reply.msg:return [Text('识别失败').color('gray')]
 	if isinstance(reply.msg, str): return [Text(reply.msg)]
-	return await toMcMsg(UniMessage.generate_sync(
-				message=reply.msg,
-				bot=current_bot.get(),
-				event=current_event.get(),
-			), session, interface)
+	return await toMcMsg(UniMessage.of(
+		message=reply.msg,
+		bot=current_bot.get(),
+	), session, interface)
 		# elif isinstance(msg, Voice):
 		# 	return UniMessage(f'语音({msg.data["summary"]})')
 		# elif isinstance(msg, Video):
